@@ -1,5 +1,6 @@
 ﻿using ApplicationService.Models;
 using ApplicationService.Repositories;
+using GreenPipes;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,8 @@ namespace ApplicationService.Controllers
             string refNo = string.Empty;
             using (var request = _client.Create(new CheckTransferStatus { ToAccount = fund.ToAccount, FromAccount = fund.FromAccount, Amount = fund.Amount}))
             {
+                request.UseExecute(x => x.Headers.Set("custom-header", "abc@123"));
+                request.UseExecute(x => x.Headers.Set("custom-header-new", "abc@123456"));
                 var response = await request.GetResponse<TransferStatusResult>();
                 refNo = response.Message.RefNo;
             }
